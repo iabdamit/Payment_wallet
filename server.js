@@ -62,6 +62,36 @@ const generateUPI = async () => {
     }
     return upi_id;
 };
+// Login Route
+app.post("/api/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Find the user by email
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).send({ message: "User not found" });
+        }
+
+        // Compare the password with the stored hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).send({ message: "Invalid credentials" });
+        }
+
+        // Send a successful response with user data
+        res.status(200).send({
+            message: "Login successful",
+            upi_id: user.upi_id,
+            balance: user.balance,
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).send({ message: "Server error" });
+    }
+});
+
 
 // SignUp Route
 app.post("/api/signup", async (req, res) => {

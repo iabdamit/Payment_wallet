@@ -37,7 +37,7 @@ export default function Transaction() {
     const fetchTransactions = async (upi_id) => {
         try {
             const response = await axios.get(
-                `http://localhost:4003/api/transactions/${upi_id}`
+                `http://localhost:5001/api/transactions/${upi_id}`
             );
             setTransactions(response.data);
         } catch (error) {
@@ -48,7 +48,7 @@ export default function Transaction() {
     const fetchBalance = async (upi_id) => {
         try {
             const response = await axios.get(
-                `http://localhost:4003/api/user/${upi_id}`
+                `http://localhost:5001/api/user/${upi_id}`
             );
             setUser(response.data);
         } catch (error) {
@@ -63,14 +63,15 @@ export default function Transaction() {
         }
         try {
             const response = await axios.post(
-                "http://localhost:4003/api/transaction",
+                "http://localhost:5001/api/transaction",
                 {
                     sender_upi_id: user.upi_id,
                     receiver_upi_id: receiverUpi,
                     amount: parseFloat(amount),
                 }
             );
-            setMessage(response.data.message);
+            // Success
+            setMessage({ text: response.data.message, type: "success" });
             if (response.status === 201) {
                 fetchTransactions(user.upi_id);
                 fetchBalance(user.upi_id);
@@ -78,8 +79,11 @@ export default function Transaction() {
                 setReceiverUpi("");
             }
         } catch (error) {
-            console.error("Error making transaction:", error);
-            setMessage(error.response?.data?.message || "Transaction failed.");
+            // console.error("Error making transaction:", error);
+            setMessage({
+                text: error.response?.data?.message || "Transaction failed.",
+                type: "error",
+            });
         }
     };
 
@@ -93,7 +97,7 @@ export default function Transaction() {
     return (
         <div className="container mt-5">
             <h1 className="text-center mb-4" style={{ color: "#2575fc" }}>
-                Smart Wallet Dashboard
+                PayEase Dashboard
             </h1>
 
             {user && (
@@ -138,7 +142,13 @@ export default function Transaction() {
                             Send Money
                         </button>
                     </div>
-                    {message && <p className="text-danger mt-2">{message}</p>}
+                    {message && (
+                        <p
+                            className={`mt-2 ${message.type === "success" ? "text-success" : "text-danger"}`}
+                        >
+                            {message.text}
+                        </p>
+                    )}
                 </div>
             </div>
 

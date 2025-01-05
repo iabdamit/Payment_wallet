@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-export default function Login() {
+export default function Login({ setUser }) {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
@@ -21,11 +21,16 @@ export default function Login() {
         setErrorMessage("");
 
         try {
-            const response = await axios.post("http://localhost:4003/api/login", formData);
-            const { upi_id, message, balance } = response.data;
+            const response = await axios.post("http://localhost:5001/api/login", formData);
+            const { upi_id, balance } = response.data;
 
-            localStorage.setItem("user", JSON.stringify({ email: formData.email, upi_id, balance }));
-            alert(message);
+            const userData = { email: formData.email, upi_id, balance };
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            // Set the user state in App.js immediately after successful login
+            setUser(userData);
+
+            // Redirect to transaction page
             navigate("/transaction");
         } catch (error) {
             console.error("Login error:", error.response?.data?.message || error.message);
@@ -38,27 +43,27 @@ export default function Login() {
             className="d-flex justify-content-center align-items-center"
             style={{
                 minHeight: "100vh",
-                background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+                background: "linear-gradient(135deg, #3d52a0, #7091e6, #8697c4, #adbbda, #ede8f5)",
                 padding: "20px",
             }}
         >
             <style>
                 {`
-                input:-webkit-autofill {
-                    background-color: white !important;
-                    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
-                    box-shadow: 0 0 0px 1000px white inset !important;
-                    color: black !important;
-                }
-                input:-webkit-autofill:hover,
-                input:-webkit-autofill:focus,
-                input:-webkit-autofill:active {
-                    background-color: white !important;
-                    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
-                    box-shadow: 0 0 0px 1000px white inset !important;
-                    color: black !important;
-                }
-                `}
+          input:-webkit-autofill {
+            background-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+            box-shadow: 0 0 0px 1000px white inset !important;
+            color: black !important;
+          }
+          input:-webkit-autofill:hover,
+          input:-webkit-autofill:focus,
+          input:-webkit-autofill:active {
+            background-color: white !important;
+            -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+            box-shadow: 0 0 0px 1000px white inset !important;
+            color: black !important;
+          }
+        `}
             </style>
             <div
                 className="card shadow"
@@ -70,7 +75,7 @@ export default function Login() {
                 }}
             >
                 <h1 className="mb-4 text-center" style={{ fontWeight: "700", color: "#333" }}>
-                    Log in to <span style={{ color: "#2575fc" }}>Smart Wallet</span>
+                    Log in to <span style={{ color: "#2575fc" }}>PayEase Wallet</span>
                 </h1>
                 <form onSubmit={handleSubmit}>
                     {["email", "password"].map((field) => (
@@ -80,7 +85,7 @@ export default function Login() {
                                 name={field}
                                 id={field}
                                 className="form-control"
-                                placeholder=" " // Required for floating label
+                                placeholder=" "
                                 value={formData[field]}
                                 onChange={handleChange}
                                 required

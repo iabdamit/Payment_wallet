@@ -28,7 +28,7 @@ export default function Signup() {
 
         try {
             const response = await axios.post(
-                "http://localhost:4003/api/signup",
+                "http://localhost:5001/api/signup",
                 formData
             );
             setSuccessMessage(
@@ -74,10 +74,11 @@ export default function Signup() {
                 className="d-flex justify-content-center align-items-center"
                 style={{
                     minHeight: "100vh",
-                    background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+                    background: "linear-gradient(135deg, #3d52a0, #7091e6, #8697c4, #adbbda, #ede8f5)",
                     padding: "20px",
                 }}
             >
+
                 <div
                     className="card shadow"
                     style={{
@@ -92,7 +93,7 @@ export default function Signup() {
                         style={{ fontWeight: "700", color: "#333" }}
                     >
                         Sign up to{" "}
-                        <span style={{ color: "#2575fc" }}>Smart Wallet</span>
+                        <span style={{ color: "#2575fc" }}>PayEase Wallet</span>
                     </h1>
                     <form onSubmit={handleSubmit}>
                         {["name", "email", "phone", "password"].map((field) => (
@@ -171,7 +172,7 @@ export default function Signup() {
                         </Link>
                     </p>
                 </div>
-            </div>
+            </div >
         </>
     );
 }
